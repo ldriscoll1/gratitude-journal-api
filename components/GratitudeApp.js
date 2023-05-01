@@ -11,11 +11,24 @@ const test = [
 ]
 
 
-export default function GratitudeApp() {
-    const [data, setData] = useState([]);
-    
+export default function GratitudeApp({ data, mutate }) {    
     const addGratitude = (newGratitude) => {
-        setData([...data, newGratitude])
+        fetch('/api', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ gratitude: newGratitude}),
+          })
+        // mutate what is stored in cache immeditately
+        // so UI updates before the request finishes
+        // (this is called Optimistic UI)
+        mutate([...data, {text: newGratitude}], {
+            optimisticData: [...data, {text: newGratitude}],
+            rollbackOnError: true,
+            populateCahce: true,
+            revalidate: false
+        })
     }
 
     const clearGratitudes = (e) => setData([]);
@@ -38,7 +51,7 @@ export default function GratitudeApp() {
                     data.length > 0 ? (
                     <>
                     <DecorativeLineBreak />
-                    <History data={data} />
+                    <History data={data.map(record => record.text)} />
                     <DecorativeLineBreak />
                     <Button onClick={clearGratitudes}>Start Again</Button>
                     <Spacer height={30} />
