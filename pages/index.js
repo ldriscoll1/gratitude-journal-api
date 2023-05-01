@@ -9,10 +9,6 @@ const fetcher = url => fetch(url).then(r => r.json())
 export default function Home({ fallback }) {
   const { data, error, mutate } = useSWR("/api", fetcher);
 
-  if (!data) {
-    return <p>Loading...</p>
-  }
-
   return <SWRConfig value={{ fallback }} >
     <Head>
       <title> Gratitude Journal </title>
@@ -20,7 +16,7 @@ export default function Home({ fallback }) {
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
       <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
     </Head>
-    <GratitudeApp data={data} mutate={mutate}/>
+    <GratitudeApp data={data} mutate={mutate} error={error}/>
   </SWRConfig>
 }
 

@@ -5,7 +5,7 @@ export default async function request(req, res) {
     const supabaseKey = process.env.SUPABASE_KEY
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    if (req.method == "POST") {
+    if (req.method === "POST") {
         // sending data to the database
         const body = req.body
         console.log(body)
@@ -19,7 +19,7 @@ export default async function request(req, res) {
         }
         res.status(200).json(data)
 
-    } else if (req.method == "GET") {
+    } else if (req.method === "GET") {
         // fetching data from the database
         let { data, error } = await supabase.from('gratitudes').select('*')
 
@@ -29,6 +29,14 @@ export default async function request(req, res) {
         }
 
         res.status(200).json(data)
+    } else if (req.method === "DELETE") {
+        // delete all records in database 
+        // DANGEROUS (obviously) but for this example ok
+        const { error } = await supabase.from('gratitudes').delete().gt('id', -1)
+
+        console.log("deleting")
+        console.log(error)
+        res.status(200).json()
     }
 
 }

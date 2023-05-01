@@ -11,7 +11,7 @@ const test = [
 ]
 
 
-export default function GratitudeApp({ data, mutate }) {    
+export default function GratitudeApp({ data, mutate, error }) {    
     const addGratitude = (newGratitude) => {
         fetch('/api', {
             method: 'POST',
@@ -31,7 +31,38 @@ export default function GratitudeApp({ data, mutate }) {
         })
     }
 
-    const clearGratitudes = (e) => setData([]);
+    const clearGratitudes = (e) => {
+        fetch('/api', {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+        mutate([], {
+            optimisticData: [],
+            rollbackOnError: true,
+            populateCahce: true,
+            revalidate: false
+        })
+    }
+
+    if (!data) {
+        return <Wrapper>
+            <DecorativeArc>
+                <Title>Gratitude Journal</Title>
+                <p>loading...</p>
+            </DecorativeArc>
+        </Wrapper>
+    }
+
+    if (error) {
+        return <Wrapper>
+            <DecorativeArc>
+                <Title>Gratitude Journal</Title>
+                <p>Error</p>
+            </DecorativeArc>
+        </Wrapper>
+    }
 
     return <Wrapper>
             <DecorativeArc>
@@ -86,8 +117,9 @@ const DecorativeArc = styled.div`
     color: var(--burnt);
     text-align: center;
     width: min(100%, 800px);
-    border-radius: 180px 180px 10px 10px;
+    border-radius: 180px 180px 50px 50px;
     padding: 20px 10%;
+    min-height: 80vh;
 `
 
 const Title = styled.h1`
