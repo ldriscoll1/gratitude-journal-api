@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import History from "./History";
 import Input from "./Input";
 import styled from "styled-components"
@@ -10,16 +10,17 @@ const test = [
     'birdsong'
 ]
 
+export default function GratitudeApp({entries}) {
+    //Take text from entries and put it into an array
+    const [data, setData] = useState(entries.map(entry => entry.text));
+    // const [data, setData] = useState([]);
 
-export default function GratitudeApp() {
-    const [data, setData] = useState([]);
-    
     const addGratitude = (newGratitude) => {
         setData([...data, newGratitude])
     }
 
     const clearGratitudes = (e) => setData([]);
-
+    
     return <Wrapper>
             <DecorativeArc>
                 <Title>Gratitude Journal</Title>
